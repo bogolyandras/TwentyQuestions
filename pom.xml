@@ -137,6 +137,18 @@
 	
 	<build>
         <finalName>TwentyQuestions</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<compilerArgs>
+						<arg>-parameters</arg>
+					</compilerArgs>
+				</configuration>
+			</plugin>
+		</plugins>
     </build>
     
 	<profiles>
@@ -221,7 +233,7 @@
 		<profile>
 			<id>java-enterprise</id>
 			<build>
-		        <finalName>TwentyQuestions-JavaEnterprise</finalName>
+		        <finalName>TwentyQuestions</finalName>
 		        <plugins>
 		        	<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
@@ -230,6 +242,14 @@
 							<excludes>
 								<exclude>**/ServletOnlyInitializer.java</exclude>
 							</excludes>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.wildfly.plugins</groupId>
+						<artifactId>wildfly-maven-plugin</artifactId>
+						<version>1.1.0.Alpha8</version>
+						<configuration>
+							<id>wildfly</id>
 						</configuration>
 					</plugin>
 		        </plugins>
