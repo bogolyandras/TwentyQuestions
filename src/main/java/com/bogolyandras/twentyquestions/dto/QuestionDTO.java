@@ -7,7 +7,7 @@ import com.bogolyandras.twentyquestions.persistence.entity.RelationType;
 
 import java.util.Comparator;
 
-public class QuestionDTO implements Comparator<QuestionDTO> {
+public class QuestionDTO {
 	
 	private Long id;
 	
@@ -75,8 +75,4 @@ public class QuestionDTO implements Comparator<QuestionDTO> {
 		this.significance = significance;
 	}
 
-    @Override
-    public int compare(QuestionDTO q1, QuestionDTO q2) {
-        return (int)(q2.getSignificance() - q1.getSignificance());
-    }
 }

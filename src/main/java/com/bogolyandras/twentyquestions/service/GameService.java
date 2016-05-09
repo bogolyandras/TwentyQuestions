@@ -1,12 +1,13 @@
 package com.bogolyandras.twentyquestions.service;
 
+import com.bogolyandras.twentyquestions.dto.GameState;
 import com.bogolyandras.twentyquestions.dto.QuestionDTO;
 import com.bogolyandras.twentyquestions.dto.ThingDTO;
+import com.bogolyandras.twentyquestions.persistence.dao.QuestionDAO;
+import com.bogolyandras.twentyquestions.persistence.dao.ThingDAO;
 import com.bogolyandras.twentyquestions.persistence.entity.Question;
 import com.bogolyandras.twentyquestions.persistence.entity.RelationType;
 import com.bogolyandras.twentyquestions.persistence.entity.Thing;
-import com.bogolyandras.twentyquestions.persistence.dao.QuestionDAO;
-import com.bogolyandras.twentyquestions.persistence.dao.ThingDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -26,31 +27,25 @@ public class GameService {
 
     @Autowired
     private ThingDAO thingDAO;
-	
-	private List<QuestionDTO> answeredQuestions;
+
+    @PostConstruct
+    public void reset() {
+        answeredQuestions.clear();
+        gameState = GameState.InProgress;
+        defineNewQuestion();
+    }
+
+    //<editor-fold desc="Variables">
+    private List<QuestionDTO> answeredQuestions = new ArrayList<>();
     private List<ThingDTO> possibleThings;
-	
 	private QuestionDTO currentQuestion;
-	private String message;
-	private Boolean displayMessage;
-    private Boolean displayDebug;
-	
-	@PostConstruct
-	public void initIt() {
-		answeredQuestions = new ArrayList<>();
-		message = "This message has to be set!";
-        displayDebug = false;
-		reset();
-	}
-	
-	public void reset() {
-		answeredQuestions.clear();
-		displayMessage = false;
-        definePossibleThings();
-		defineNewQuestion();
-	}
-	
-	public void answerYes() {
+    private Boolean displayDebug = false;
+    private GameState gameState;
+    private Random random = new Random();
+    //</editor-fold>
+
+    //<editor-fold desc="Answering logic">
+    public void answerYes() {
 		addAnswer(RelationType.Y);
 	}
 	
@@ -68,11 +63,12 @@ public class GameService {
 			questionDTO.setRelation(relationType);
 			answeredQuestions.add(questionDTO);
 		}
-        definePossibleThings();
 		defineNewQuestion();
 	}
-	
-	private List<Long> getAnsweredQuestionsIds() {
+    //</editor-fold>
+
+    //<editor-fold desc="Question defining logic">
+    private List<Long> getAnsweredQuestionsIds() {
 		List<Long> questionIdsBack = new ArrayList<>();
 		for(QuestionDTO q : getAnsweredQuestions())
 			questionIdsBack.add(q.getId());
@@ -82,18 +78,16 @@ public class GameService {
 	}
 	
 	private void defineNewQuestion() {
-        defineMostSignificantQuestion();
-	}
-
-    private void defineMostSignificantQuestion() {
+        definePossibleThings();
         List<Long> answeredQuestions = getAnsweredQuestionsIds();
-        List<Long> possibleThingIds = new ArrayList<>();
-        getPossibleThings().stream().forEach(t -> possibleThingIds.add(t.getId()));
+        List<Long> possibleThingIds =
+                getPossibleThings()
+                        .stream()
+                        .map(thingDTO -> thingDTO.getId())
+                        .collect(Collectors.toList());
 
         if (possibleThingIds.size() == 0) {
-            currentQuestion = new QuestionDTO();
-            message = "app.game.nomorequestions";
-            displayMessage = true;
+            gameState = GameState.End;
             return;
         }
 
@@ -111,30 +105,21 @@ public class GameService {
                 }
             }
         }
-        orderedQuestions.sort(new QuestionDTO());
+        orderedQuestions.sort((q1, q2) -> (int)(q2.getSignificance() - q1.getSignificance()));
 
         if (orderedQuestions.size() == 0) {
-            currentQuestion = new QuestionDTO();
-            message = "app.game.foundout";
-            displayMessage = true;
+            gameState = GameState.End;
         } else {
             long greatestSignificance = orderedQuestions.get(0).getSignificance();
             orderedQuestions = orderedQuestions.stream()
-                            .filter(questionDTO -> questionDTO.getSignificance() == greatestSignificance)
-                            .collect(Collectors.toList());
-            currentQuestion = orderedQuestions.get(new Random().nextInt(orderedQuestions.size()));
-            displayMessage = false;
+                    .filter(questionDTO -> questionDTO.getSignificance() == greatestSignificance)
+                    .collect(Collectors.toList());
+            currentQuestion = orderedQuestions.get(random.nextInt(orderedQuestions.size()));
         }
-    }
-	
-	public QuestionDTO getCurrentQuestion() {
-		return currentQuestion;
 	}
+    //</editor-fold>
 
-	public List<QuestionDTO> getAnsweredQuestions() {
-		return answeredQuestions;
-	}
-
+    //<editor-fold desc="Possible and impossible things">
     private void definePossibleThings() {
         List<Long> impossibleThings = getImpossibleThings();
         Iterable<Thing> allPossibleThings = thingDAO.getPossibleThings(impossibleThings);
@@ -144,10 +129,6 @@ public class GameService {
         }
         possibleThings = possibleThingsBack;
     }
-
-	public List<ThingDTO> getPossibleThings() {
-        return possibleThings;
-	}
 
     private List<Long> getImpossibleThings() {
         List<Long> answeredQuestionsWithYes = new ArrayList<>();
@@ -170,14 +151,28 @@ public class GameService {
             impossibleThingsBack.add(-1L);
         return impossibleThingsBack;
     }
+    //</editor-fold>
 
-	public String getMessage() {
-		return message;
-	}
+    //<editor-fold desc="Getters and setters">
+    public QuestionDTO getCurrentQuestion() {
+        return currentQuestion;
+    }
 
-	public Boolean getDisplayMessage() {
-		return displayMessage;
-	}
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public List<ThingDTO> getPossibleThings() {
+        return possibleThings;
+    }
+
+    public List<QuestionDTO> getAnsweredQuestions() {
+        return answeredQuestions;
+    }
 
     public Boolean getDisplayDebug() {
         return displayDebug;
@@ -190,5 +185,6 @@ public class GameService {
     public void disableDebug() {
         displayDebug = false;
     }
+    //</editor-fold>
 	
 }

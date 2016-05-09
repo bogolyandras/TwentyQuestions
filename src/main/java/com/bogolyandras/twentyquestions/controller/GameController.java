@@ -1,5 +1,6 @@
 package com.bogolyandras.twentyquestions.controller;
 
+import com.bogolyandras.twentyquestions.dto.GameState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
@@ -22,8 +23,7 @@ public class GameController {
 		model.addAttribute("question", gameService.getCurrentQuestion());
 		model.addAttribute("answeredQuestions", gameService.getAnsweredQuestions());
 		model.addAttribute("possibleThings", gameService.getPossibleThings());
-		model.addAttribute("message", gameService.getMessage());
-		model.addAttribute("displayMessage", gameService.getDisplayMessage());
+		model.addAttribute("gameState", gameService.getGameState());
 		model.addAttribute("enableDebug", gameService.getDisplayDebug());
 		return "game";
 	}
@@ -59,6 +59,12 @@ public class GameController {
 	@RequestMapping(value = "/disabledebug", method = RequestMethod.GET)
 	public String disableDebug(ModelMap model) {
 		gameService.disableDebug();
+		return game(model);
+	}
+
+	@RequestMapping(value = "/iamsatisfied", method = RequestMethod.POST)
+	public String iAmSatisfied(ModelMap model) {
+		gameService.setGameState(GameState.Satisfied);
 		return game(model);
 	}
 
