@@ -45,6 +45,19 @@
                     <c:choose>
                         <c:when test="${fn:length(possibleThings) eq 0}">
                             <h2><fmt:message key="app.game.cantfindout" /></h2>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><h3><fmt:message key="app.game.teachnewthing" /></h3></td>
+                                        <td>
+                                            <form method="post" action="<c:url value="/teachme"/>">
+                                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                                                <input type="submit" class="btn btn-success" value="<fmt:message key="app.answer.yes" />" />
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </c:when>
                         <c:otherwise>
                             <h2><fmt:message key="app.game.foundout" /></h2>

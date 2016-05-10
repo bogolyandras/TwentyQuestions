@@ -17,9 +17,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-        <java.version>1.8</java.version>
-        <springframework-version>4.2.5.RELEASE</springframework-version>
-        <springframework-security-version>4.0.4.RELEASE</springframework-security-version>
+        <springframework-version>4.2.6.RELEASE</springframework-version>
+        <springframework-security-version>4.1.0.RELEASE</springframework-security-version>
         <hibernate.version>5.1.0.Final</hibernate.version>
 		<slf4j-version>1.7.21</slf4j-version>
     </properties>

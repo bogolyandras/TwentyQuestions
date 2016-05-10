@@ -58,11 +58,15 @@ public class TeachNewService {
         gameService.getAnsweredQuestions()
                 .forEach(questionDTO -> answeredQuestions.add(questionDTO));
 
+        List<Long> answeredQuestionIds = answeredQuestions
+                .stream()
+                .map(questionDTO -> questionDTO.getId())
+                .collect(Collectors.toList());
+        if (answeredQuestionIds.size()==0)
+            answeredQuestionIds.add(-1L);
+
         questionDAO.getRemainingQuestions(
-                answeredQuestions
-                        .stream()
-                        .map(questionDTO -> questionDTO.getId())
-                        .collect(Collectors.toList())
+            answeredQuestionIds
         ).forEach(question -> remainigQuestions.add(new QuestionDTO(question.getId(), question.getText())));
 
         thingDAO.findAll().forEach(thing -> remainingThings.add(new ThingDTO(thing.getId(), thing.getName())));
