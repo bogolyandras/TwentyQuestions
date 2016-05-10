@@ -1,11 +1,9 @@
 package com.bogolyandras.twentyquestions.dto;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
 import com.bogolyandras.twentyquestions.persistence.entity.RelationType;
 
-import java.util.Comparator;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class QuestionDTO {
 	

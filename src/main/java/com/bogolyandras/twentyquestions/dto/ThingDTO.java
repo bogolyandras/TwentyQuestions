@@ -1,5 +1,7 @@
 package com.bogolyandras.twentyquestions.dto;
 
+import com.bogolyandras.twentyquestions.persistence.entity.RelationType;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -10,6 +12,8 @@ public class ThingDTO {
 	@NotNull
 	@Size(min=1, max=45)
 	private String name;
+
+	private RelationType relation;
 	
 	public ThingDTO() {
 	}
@@ -38,5 +42,12 @@ public class ThingDTO {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	public RelationType getRelation() {
+		return relation;
+	}
+
+	public void setRelation(RelationType relation) {
+		this.relation = relation;
+	}
 }
