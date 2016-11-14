@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class TeachNewService {
 
     @Autowired
-    GameService gameService;
+    private GameService gameService;
 
     @Autowired
     private QuestionDAO questionDAO;
@@ -101,6 +101,7 @@ public class TeachNewService {
     public void defineQuestionText(String text) {
         question.setText(text);
         remainingThings.add(new ThingDTO(thing.getName()));
+        defineCurrentStuff();
     }
 
     //<editor-fold desc="Answering logic">

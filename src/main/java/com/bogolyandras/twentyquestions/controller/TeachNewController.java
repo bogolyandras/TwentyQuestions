@@ -20,7 +20,7 @@ import javax.validation.Valid;
 public class TeachNewController {
 
     @Autowired
-    TeachNewService teachNewService;
+    private TeachNewService teachNewService;
 
     public String createModel(ModelMap model) {
         if (!model.containsAttribute("thing"))
