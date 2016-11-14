@@ -1,4 +1,4 @@
-package com.bogolyandras.twentyquestions.configuration;
+package com.bogolyandras.twentyquestions;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +14,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true, jsr250Enabled=true)
+@EnableGlobalMethodSecurity(securedEnabled=true, prePostEnabled=true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Autowired

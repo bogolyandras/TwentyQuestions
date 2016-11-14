@@ -1,17 +1,12 @@
-package com.bogolyandras.twentyquestions.configuration;
+package com.bogolyandras.twentyquestions;
 
-import com.bogolyandras.twentyquestions.controller.ControllerMarker;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 @Configuration
-@EnableWebMvc
-@ComponentScan(basePackageClasses = {ControllerMarker.class})
-public class DefaultServletConfiguration {
+public class ServletConfiguration {
 
     @Bean
     public UrlBasedViewResolver viewResolver() {

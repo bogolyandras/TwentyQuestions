@@ -1,0 +1,10 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: initialize_database
+      author: andrasbogoly
+      changes:
+      - sqlFile:
+          path: classpath:db/changelog/sql/users.sql
+      - sqlFile:
+          path: classpath:db/changelog/sql/model.sql
